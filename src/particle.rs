@@ -6,9 +6,9 @@ pub struct Particle {
 }
 
 impl Particle {
-    fn default() -> Self {
+    pub fn default() -> Self {
         Particle {
-            color: 0,
+            color: 0xFFDEAD,
             density: 0,
         }
     }
