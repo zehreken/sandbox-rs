@@ -3,11 +3,11 @@ use std::time::{Duration, Instant};
 mod particle;
 use particle::{Particle, ParticleModel};
 
-const WIDTH: usize = 640;
-const HEIGHT: usize = 360;
+const WIDTH: usize = 320;
+const HEIGHT: usize = 180;
 
 fn main() {
-    let start = Instant::now();
+    // let start = Instant::now();
     let mut model = ParticleModel::new(WIDTH, HEIGHT);
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
 
@@ -16,7 +16,7 @@ fn main() {
         WIDTH,
         HEIGHT,
         WindowOptions {
-            scale: minifb::Scale::X1,
+            scale: minifb::Scale::X4,
             ..WindowOptions::default()
         },
     )
@@ -27,7 +27,9 @@ fn main() {
     window.limit_update_rate(Some(Duration::from_micros(16600)));
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        let diff: Duration = Instant::now() - start;
+        // let diff: Duration = Instant::now() - start;
+
+        // model.particles[160] = Some(Particle::water());
 
         window.get_mouse_pos(MouseMode::Discard).map(|(x, y)| {
             let screen_pos = y as usize * WIDTH + x as usize;

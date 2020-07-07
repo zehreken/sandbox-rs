@@ -1,3 +1,4 @@
+use rand::prelude::*;
 #[derive(Clone)]
 pub struct Particle {
     pub color: u32,
@@ -37,16 +38,52 @@ impl ParticleModel {
     }
 
     pub fn simulate(&mut self) {
+        let mut rng = rand::thread_rng();
         for i in (0..self.particles.len()).rev() {
             if let Some(p) = &self.particles[i] {
-                if let Some(below) = get_index_below(i, self.width, self.height) {
+                if let Some(below) = get_index_down(i, self.width, self.height) {
                     if let Some(below_p) = &self.particles[below] {
+                        let is_left = rng.gen::<f32>() < 0.5;
+                        // If there is something below
                         if below_p.density < p.density {
                             let temp = p.clone();
                             self.particles[i] = Some(below_p.clone());
                             self.particles[below] = Some(temp);
+                        } else if is_left {
+                            if let Some(left) = get_index_left(below, self.width, self.height) {
+                                if let None = &self.particles[left] {
+                                    let temp = p.clone();
+                                    self.particles[i] = None;
+                                    self.particles[left] = Some(temp);
+                                }
+                            } else if let Some(right) =
+                                get_index_right(below, self.width, self.height)
+                            {
+                                if let None = &self.particles[right] {
+                                    let temp = p.clone();
+                                    self.particles[i] = None;
+                                    self.particles[right] = Some(temp);
+                                }
+                            }
+                        } else {
+                            if let Some(right) = get_index_right(below, self.width, self.height) {
+                                if let None = &self.particles[right] {
+                                    let temp = p.clone();
+                                    self.particles[i] = None;
+                                    self.particles[right] = Some(temp);
+                                }
+                            } else if let Some(left) =
+                                get_index_right(below, self.width, self.height)
+                            {
+                                if let None = &self.particles[left] {
+                                    let temp = p.clone();
+                                    self.particles[i] = None;
+                                    self.particles[left] = Some(temp);
+                                }
+                            }
                         }
                     } else {
+                        // If there is nothing below, just fall
                         let temp = p.clone();
                         self.particles[i] = None;
                         self.particles[below] = Some(temp);
@@ -57,8 +94,26 @@ impl ParticleModel {
     }
 }
 
-fn get_index_below(index: usize, width: usize, height: usize) -> Option<usize> {
+fn get_index_down(index: usize, width: usize, height: usize) -> Option<usize> {
     let index = index + width;
+    if index < width * height {
+        Some(index)
+    } else {
+        None
+    }
+}
+
+fn get_index_left(index: usize, width: usize, height: usize) -> Option<usize> {
+    let index = index - 1;
+    if index < width * height {
+        Some(index)
+    } else {
+        None
+    }
+}
+
+fn get_index_right(index: usize, width: usize, height: usize) -> Option<usize> {
+    let index = index + 1;
     if index < width * height {
         Some(index)
     } else {
