@@ -50,5 +50,7 @@ fn main() {
         }
 
         window.update_with_buffer(&buffer, WIDTH, HEIGHT).unwrap();
+
+        model.simulate();
     }
 }
