@@ -33,12 +33,12 @@ fn main() {
             let screen_pos = y as usize * WIDTH + x as usize;
 
             if window.get_mouse_down(MouseButton::Left) {
-                model.particles[screen_pos] = Some(Particle::default());
+                model.particles[screen_pos] = Some(Particle::sand());
             }
 
-            // if window.get_mouse_down(MouseButton::Right) {
-            //     buffer[screen_pos] = 0;
-            // }
+            if window.get_mouse_down(MouseButton::Right) {
+                model.particles[screen_pos] = Some(Particle::water());
+            }
         });
 
         for (index, i) in buffer.iter_mut().enumerate() {

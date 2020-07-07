@@ -6,10 +6,17 @@ pub struct Particle {
 }
 
 impl Particle {
-    pub fn default() -> Self {
+    pub fn sand() -> Self {
         Particle {
             color: 0xFFDEAD,
-            density: 0,
+            density: 10,
+        }
+    }
+
+    pub fn water() -> Self {
+        Particle {
+            color: 0x0EBFE9,
+            density: 1,
         }
     }
 }
@@ -32,12 +39,17 @@ impl ParticleModel {
     pub fn simulate(&mut self) {
         for i in (0..self.particles.len()).rev() {
             if let Some(p) = &self.particles[i] {
-                if let Some(index) = get_index_below(i, self.width, self.height) {
-                    if let None = self.particles[index] {
+                if let Some(below) = get_index_below(i, self.width, self.height) {
+                    if let Some(below_p) = &self.particles[below] {
+                        if below_p.density < p.density {
+                            let temp = p.clone();
+                            self.particles[i] = Some(below_p.clone());
+                            self.particles[below] = Some(temp);
+                        }
+                    } else {
                         let temp = p.clone();
                         self.particles[i] = None;
-                        // println!("{}, {}", i, index);
-                        self.particles[index] = Some(temp);
+                        self.particles[below] = Some(temp);
                     }
                 }
             }
