@@ -1,7 +1,7 @@
 use minifb::{Key, MouseButton, MouseMode, Window, WindowOptions};
 use std::time::{Duration, Instant};
 mod particle;
-use particle::{Particle, ParticleModel};
+use particle::{ParticleModel, ParticleProperties};
 
 const WIDTH: usize = 320;
 const HEIGHT: usize = 180;
@@ -35,11 +35,11 @@ fn main() {
             let screen_pos = y as usize * WIDTH + x as usize;
 
             if window.get_mouse_down(MouseButton::Left) {
-                model.particles[screen_pos] = Some(Particle::sand());
+                model.particles[screen_pos] = Some(ParticleProperties::sand());
             }
 
             if window.get_mouse_down(MouseButton::Right) {
-                model.particles[screen_pos] = Some(Particle::water());
+                model.particles[screen_pos] = Some(ParticleProperties::water());
             }
         });
 

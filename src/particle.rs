@@ -1,21 +1,63 @@
 use rand::prelude::*;
 #[derive(Clone)]
-pub struct Particle {
+pub struct ParticleProperties {
+    pub kind: u8,
     pub color: u32,
     pub density: u8,
     // pub flammable: bool,
 }
 
-impl Particle {
+pub trait Particle {
+    fn new() -> Self;
+    fn simulate();
+}
+
+pub struct Sand {
+    properties: ParticleProperties,
+}
+
+impl Particle for Sand {
+    fn new() -> Sand {
+        Sand {
+            properties: ParticleProperties {
+                kind: 0,
+                color: 0xFFDEAD,
+                density: 10,
+            },
+        }
+    }
+    fn simulate() {}
+}
+
+pub struct Water {
+    properties: ParticleProperties,
+}
+
+impl Particle for Water {
+    fn new() -> Water {
+        Water {
+            properties: ParticleProperties {
+                kind: 1,
+                color: 0x0EBFE9,
+                density: 1,
+            },
+        }
+    }
+    fn simulate() {}
+}
+
+impl ParticleProperties {
     pub fn sand() -> Self {
-        Particle {
+        ParticleProperties {
+            kind: 0,
             color: 0xFFDEAD,
             density: 10,
         }
     }
 
     pub fn water() -> Self {
-        Particle {
+        ParticleProperties {
+            kind: 1,
             color: 0x0EBFE9,
             density: 1,
         }
@@ -25,7 +67,7 @@ impl Particle {
 pub struct ParticleModel {
     pub width: usize,
     pub height: usize,
-    pub particles: Vec<Option<Particle>>,
+    pub particles: Vec<Option<ParticleProperties>>,
 }
 
 impl ParticleModel {
@@ -51,7 +93,13 @@ impl ParticleModel {
                             self.particles[below] = Some(temp);
                         } else if is_left {
                             if let Some(left) = get_index_left(below, self.width, self.height) {
-                                if let None = &self.particles[left] {
+                                if let Some(left_p) = &self.particles[left] {
+                                    if p.kind != 1 && left_p.kind == 1 {
+                                        let temp = p.clone();
+                                        self.particles[i] = Some(left_p.clone());
+                                        self.particles[left] = Some(temp);
+                                    }
+                                } else {
                                     let temp = p.clone();
                                     self.particles[i] = None;
                                     self.particles[left] = Some(temp);
@@ -59,7 +107,13 @@ impl ParticleModel {
                             } else if let Some(right) =
                                 get_index_right(below, self.width, self.height)
                             {
-                                if let None = &self.particles[right] {
+                                if let Some(right_p) = &self.particles[right] {
+                                    if p.kind != 1 && right_p.kind == 1 {
+                                        let temp = p.clone();
+                                        self.particles[i] = Some(right_p.clone());
+                                        self.particles[right] = Some(temp);
+                                    }
+                                } else {
                                     let temp = p.clone();
                                     self.particles[i] = None;
                                     self.particles[right] = Some(temp);
@@ -67,7 +121,13 @@ impl ParticleModel {
                             }
                         } else {
                             if let Some(right) = get_index_right(below, self.width, self.height) {
-                                if let None = &self.particles[right] {
+                                if let Some(right_p) = &self.particles[right] {
+                                    if p.kind != 1 && right_p.kind == 1 {
+                                        let temp = p.clone();
+                                        self.particles[i] = Some(right_p.clone());
+                                        self.particles[right] = Some(temp);
+                                    }
+                                } else {
                                     let temp = p.clone();
                                     self.particles[i] = None;
                                     self.particles[right] = Some(temp);
@@ -75,7 +135,13 @@ impl ParticleModel {
                             } else if let Some(left) =
                                 get_index_right(below, self.width, self.height)
                             {
-                                if let None = &self.particles[left] {
+                                if let Some(left_p) = &self.particles[left] {
+                                    if p.kind != 1 && left_p.kind == 1 {
+                                        let temp = p.clone();
+                                        self.particles[i] = Some(left_p.clone());
+                                        self.particles[left] = Some(temp);
+                                    }
+                                } else {
                                     let temp = p.clone();
                                     self.particles[i] = None;
                                     self.particles[left] = Some(temp);
