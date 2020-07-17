@@ -7,11 +7,32 @@ pub struct ParticleProperties {
     // pub flammable: bool,
 }
 
-pub trait Particle {
-    fn new() -> Self;
-    fn simulate();
+pub trait Particle: ParticleClone {
+    // POST: Explain why you have 'where Self: Sized'
+    fn new() -> Self
+    where
+        Self: Sized;
+    fn simulate(&self);
 }
 
+// POST: Explain clone implemention for traits
+pub trait ParticleClone {
+    fn clone_box(&self) -> Box<dyn Particle>;
+}
+
+impl<T: 'static + Particle + Clone> ParticleClone for T {
+    fn clone_box(&self) -> Box<dyn Particle> {
+        Box::new(self.clone())
+    }
+}
+
+impl Clone for Box<dyn Particle> {
+    fn clone(&self) -> Box<dyn Particle> {
+        self.clone_box()
+    }
+}
+
+#[derive(Clone)]
 pub struct Sand {
     properties: ParticleProperties,
 }
@@ -26,9 +47,10 @@ impl Particle for Sand {
             },
         }
     }
-    fn simulate() {}
+    fn simulate(&self) {}
 }
 
+#[derive(Clone)]
 pub struct Water {
     properties: ParticleProperties,
 }
@@ -43,7 +65,7 @@ impl Particle for Water {
             },
         }
     }
-    fn simulate() {}
+    fn simulate(&self) {}
 }
 
 impl ParticleProperties {
@@ -68,6 +90,7 @@ pub struct ParticleModel {
     pub width: usize,
     pub height: usize,
     pub particles: Vec<Option<ParticleProperties>>,
+    pub _particles: Vec<Option<Box<dyn Particle>>>,
 }
 
 impl ParticleModel {
@@ -76,6 +99,7 @@ impl ParticleModel {
             width,
             height,
             particles: vec![None; width * height],
+            _particles: vec![None; width * height],
         }
     }
 
