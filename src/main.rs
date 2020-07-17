@@ -1,7 +1,7 @@
 use minifb::{Key, MouseButton, MouseMode, Window, WindowOptions};
 use std::time::{Duration, Instant};
 mod particle;
-use particle::{ParticleModel, ParticleProperties};
+use particle::{Particle, ParticleModel, ParticleProperties, Sand, Water};
 
 const WIDTH: usize = 320;
 const HEIGHT: usize = 180;
@@ -36,10 +36,12 @@ fn main() {
 
             if window.get_mouse_down(MouseButton::Left) {
                 model.particles[screen_pos] = Some(ParticleProperties::sand());
+                model._particles[screen_pos] = Some(Box::new(Sand::new()));
             }
 
             if window.get_mouse_down(MouseButton::Right) {
                 model.particles[screen_pos] = Some(ParticleProperties::water());
+                model._particles[screen_pos] = Some(Box::new(Water::new()));
             }
         });
 
@@ -54,5 +56,6 @@ fn main() {
         window.update_with_buffer(&buffer, WIDTH, HEIGHT).unwrap();
 
         model.simulate();
+        model._simulate();
     }
 }

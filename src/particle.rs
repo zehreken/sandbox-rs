@@ -47,7 +47,9 @@ impl Particle for Sand {
             },
         }
     }
-    fn simulate(&self) {}
+    fn simulate(&self) {
+        println!("Simulating sand");
+    }
 }
 
 #[derive(Clone)]
@@ -65,7 +67,9 @@ impl Particle for Water {
             },
         }
     }
-    fn simulate(&self) {}
+    fn simulate(&self) {
+        println!("Simulating water");
+    }
 }
 
 impl ParticleProperties {
@@ -103,6 +107,15 @@ impl ParticleModel {
         }
     }
 
+    pub fn _simulate(&mut self) {
+        for p in &self._particles {
+            if let Some(particle) = p {
+                particle.simulate();
+            }
+        }
+    }
+
+    #[deprecated = "There is a new implementation"]
     pub fn simulate(&mut self) {
         let mut rng = rand::thread_rng();
         for i in (0..self.particles.len()).rev() {
