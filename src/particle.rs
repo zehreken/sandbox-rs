@@ -66,31 +66,30 @@ impl Particle for Sand {
         index: usize,
         particles: &Vec<Option<Box<dyn Particle>>>,
     ) -> Option<SimulationResult> {
-        // println!("Simulating sand");
         let mut result = None;
         if let Some(below) = get_index_down(index, super::WIDTH, super::HEIGHT) {
             if let Some(_) = &particles[below] {
                 if let Some(left_to_below) = get_index_left(below, super::WIDTH, super::HEIGHT) {
                     if let None = &particles[left_to_below] {
                         let temp = self.clone();
-                        let tuple: SimulationResult =
+                        let sim_res: SimulationResult =
                             ((index, None), (left_to_below, Some(Box::new(temp))));
-                        result = Some(tuple);
+                        result = Some(sim_res);
                     }
                 }
                 if let Some(right_to_below) = get_index_right(below, super::WIDTH, super::HEIGHT) {
                     if let None = &particles[right_to_below] {
                         let temp = self.clone();
-                        let tuple: SimulationResult =
+                        let sim_res: SimulationResult =
                             ((index, None), (right_to_below, Some(Box::new(temp))));
-                        result = Some(tuple);
+                        result = Some(sim_res);
                     }
                 }
             } else {
                 // If there is nothing below, just fall
                 let temp = self.clone();
-                let tuple: SimulationResult = ((index, None), (below, Some(Box::new(temp))));
-                result = Some(tuple);
+                let sim_res: SimulationResult = ((index, None), (below, Some(Box::new(temp))));
+                result = Some(sim_res);
             }
         }
 
@@ -123,8 +122,38 @@ impl Particle for Water {
         index: usize,
         particles: &Vec<Option<Box<dyn Particle>>>,
     ) -> Option<SimulationResult> {
-        // println!("Simulating water");
-        None
+        let mut result = None;
+        if let Some(below) = get_index_down(index, super::WIDTH, super::HEIGHT) {
+            let mut moved = false;
+            if let Some(_) = &particles[below] {
+                if let Some(left) = get_index_left(index, super::WIDTH, super::HEIGHT) {
+                    if let None = &particles[left] {
+                        let temp = self.clone();
+                        let sim_res: SimulationResult =
+                            ((index, None), (left, Some(Box::new(temp))));
+                        result = Some(sim_res);
+                        moved = true;
+                    }
+                }
+                if !moved {
+                    if let Some(right) = get_index_right(index, super::WIDTH, super::HEIGHT) {
+                        if let None = &particles[right] {
+                            let temp = self.clone();
+                            let sim_res: SimulationResult =
+                                ((index, None), (right, Some(Box::new(temp))));
+                            result = Some(sim_res);
+                        }
+                    }
+                }
+            } else {
+                // If there is nothing below, just fall
+                let temp = self.clone();
+                let sim_res: SimulationResult = ((index, None), (below, Some(Box::new(temp))));
+                result = Some(sim_res);
+            }
+        }
+
+        result
     }
 }
 
