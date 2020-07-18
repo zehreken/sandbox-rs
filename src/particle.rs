@@ -1,4 +1,3 @@
-use rand::prelude::*;
 type SimulationResult = (
     (usize, Option<Box<dyn Particle>>),
     (usize, Option<Box<dyn Particle>>),
@@ -157,6 +156,27 @@ impl Particle for Water {
     }
 }
 
+#[derive(Clone)]
+pub struct Rock {
+    pub properties: ParticleProperties,
+}
+
+impl Particle for Rock {
+    fn new() -> Rock {
+        todo!()
+    }
+    fn get_properties(&self) -> &ParticleProperties {
+        todo!()
+    }
+    fn simulate(
+        &self,
+        index: usize,
+        particles: &Vec<Option<Box<dyn Particle>>>,
+    ) -> Option<SimulationResult> {
+        todo!()
+    }
+}
+
 impl ParticleProperties {
     pub fn sand() -> Self {
         ParticleProperties {
@@ -192,7 +212,7 @@ impl ParticleModel {
         }
     }
 
-    pub fn _simulate(&mut self) {
+    pub fn simulate(&mut self) {
         // Simulate from bottom to top
         for i in (0..self._particles.len()).rev() {
             if let Some(p) = &self._particles[i] {
@@ -200,87 +220,6 @@ impl ParticleModel {
                 if let Some(r) = result {
                     self._particles[(r.0).0] = (r.0).1;
                     self._particles[(r.1).0] = (r.1).1;
-                }
-            }
-        }
-    }
-
-    #[deprecated = "There is a new implementation"]
-    pub fn simulate(&mut self) {
-        let mut rng = rand::thread_rng();
-        for i in (0..self.particles.len()).rev() {
-            if let Some(p) = &self.particles[i] {
-                if let Some(below) = get_index_down(i, self.width, self.height) {
-                    if let Some(below_p) = &self.particles[below] {
-                        let is_left = rng.gen::<f32>() < 0.5;
-                        // If there is something below
-                        if below_p.density < p.density {
-                            let temp = p.clone();
-                            self.particles[i] = Some(below_p.clone());
-                            self.particles[below] = Some(temp);
-                        } else if is_left {
-                            if let Some(left) = get_index_left(below, self.width, self.height) {
-                                if let Some(left_p) = &self.particles[left] {
-                                    if p.kind != 1 && left_p.kind == 1 {
-                                        let temp = p.clone();
-                                        self.particles[i] = Some(left_p.clone());
-                                        self.particles[left] = Some(temp);
-                                    }
-                                } else {
-                                    let temp = p.clone();
-                                    self.particles[i] = None;
-                                    self.particles[left] = Some(temp);
-                                }
-                            } else if let Some(right) =
-                                get_index_right(below, self.width, self.height)
-                            {
-                                if let Some(right_p) = &self.particles[right] {
-                                    if p.kind != 1 && right_p.kind == 1 {
-                                        let temp = p.clone();
-                                        self.particles[i] = Some(right_p.clone());
-                                        self.particles[right] = Some(temp);
-                                    }
-                                } else {
-                                    let temp = p.clone();
-                                    self.particles[i] = None;
-                                    self.particles[right] = Some(temp);
-                                }
-                            }
-                        } else {
-                            if let Some(right) = get_index_right(below, self.width, self.height) {
-                                if let Some(right_p) = &self.particles[right] {
-                                    if p.kind != 1 && right_p.kind == 1 {
-                                        let temp = p.clone();
-                                        self.particles[i] = Some(right_p.clone());
-                                        self.particles[right] = Some(temp);
-                                    }
-                                } else {
-                                    let temp = p.clone();
-                                    self.particles[i] = None;
-                                    self.particles[right] = Some(temp);
-                                }
-                            } else if let Some(left) =
-                                get_index_right(below, self.width, self.height)
-                            {
-                                if let Some(left_p) = &self.particles[left] {
-                                    if p.kind != 1 && left_p.kind == 1 {
-                                        let temp = p.clone();
-                                        self.particles[i] = Some(left_p.clone());
-                                        self.particles[left] = Some(temp);
-                                    }
-                                } else {
-                                    let temp = p.clone();
-                                    self.particles[i] = None;
-                                    self.particles[left] = Some(temp);
-                                }
-                            }
-                        }
-                    } else {
-                        // If there is nothing below, just fall
-                        let temp = p.clone();
-                        self.particles[i] = None;
-                        self.particles[below] = Some(temp);
-                    }
                 }
             }
         }
