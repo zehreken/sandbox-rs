@@ -1,5 +1,3 @@
-use rand::prelude::*;
-
 type SimulationResult = (
     (usize, Option<Box<dyn Particle>>),
     (usize, Option<Box<dyn Particle>>),
@@ -194,8 +192,8 @@ impl Particle for Rock {
     }
     fn simulate(
         &self,
-        index: usize,
-        particles: &Vec<Option<Box<dyn Particle>>>,
+        _index: usize,
+        _particles: &Vec<Option<Box<dyn Particle>>>,
     ) -> Option<SimulationResult> {
         None
     }
