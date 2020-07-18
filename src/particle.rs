@@ -1,4 +1,8 @@
 use rand::prelude::*;
+type SimulationResult = (
+    (usize, Option<Box<dyn Particle>>),
+    (usize, Option<Box<dyn Particle>>),
+);
 #[derive(Clone)]
 pub struct ParticleProperties {
     pub kind: u8,
@@ -17,10 +21,7 @@ pub trait Particle: ParticleClone {
         &self,
         index: usize,
         particles: &Vec<Option<Box<dyn Particle>>>,
-    ) -> Option<(
-        (usize, Option<Box<dyn Particle>>),
-        (usize, Option<Box<dyn Particle>>),
-    )>;
+    ) -> Option<SimulationResult>;
 }
 
 // POST: Explain clone implemention for traits
@@ -64,10 +65,7 @@ impl Particle for Sand {
         &self,
         index: usize,
         particles: &Vec<Option<Box<dyn Particle>>>,
-    ) -> Option<(
-        (usize, Option<Box<dyn Particle>>),
-        (usize, Option<Box<dyn Particle>>),
-    )> {
+    ) -> Option<SimulationResult> {
         // println!("Simulating sand");
         let mut result = None;
         if let Some(below) = get_index_down(index, super::WIDTH, super::HEIGHT) {
@@ -75,30 +73,23 @@ impl Particle for Sand {
                 if let Some(left_to_below) = get_index_left(below, super::WIDTH, super::HEIGHT) {
                     if let None = &particles[left_to_below] {
                         let temp = self.clone();
-                        let tuple: (
-                            (usize, Option<Box<dyn Particle>>),
-                            (usize, Option<Box<dyn Particle>>),
-                        ) = ((index, None), (left_to_below, Some(Box::new(temp))));
+                        let tuple: SimulationResult =
+                            ((index, None), (left_to_below, Some(Box::new(temp))));
                         result = Some(tuple);
                     }
                 }
                 if let Some(right_to_below) = get_index_right(below, super::WIDTH, super::HEIGHT) {
                     if let None = &particles[right_to_below] {
                         let temp = self.clone();
-                        let tuple: (
-                            (usize, Option<Box<dyn Particle>>),
-                            (usize, Option<Box<dyn Particle>>),
-                        ) = ((index, None), (right_to_below, Some(Box::new(temp))));
+                        let tuple: SimulationResult =
+                            ((index, None), (right_to_below, Some(Box::new(temp))));
                         result = Some(tuple);
                     }
                 }
             } else {
                 // If there is nothing below, just fall
                 let temp = self.clone();
-                let tuple: (
-                    (usize, Option<Box<dyn Particle>>),
-                    (usize, Option<Box<dyn Particle>>),
-                ) = ((index, None), (below, Some(Box::new(temp))));
+                let tuple: SimulationResult = ((index, None), (below, Some(Box::new(temp))));
                 result = Some(tuple);
             }
         }
@@ -131,10 +122,7 @@ impl Particle for Water {
         &self,
         index: usize,
         particles: &Vec<Option<Box<dyn Particle>>>,
-    ) -> Option<(
-        (usize, Option<Box<dyn Particle>>),
-        (usize, Option<Box<dyn Particle>>),
-    )> {
+    ) -> Option<SimulationResult> {
         // println!("Simulating water");
         None
     }
