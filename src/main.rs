@@ -1,10 +1,10 @@
 use minifb::{Key, MouseButton, MouseMode, Window, WindowOptions};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 mod particle;
 use particle::{Particle, ParticleModel, Rock, Sand, Water};
 
-const WIDTH: usize = 320;
-const HEIGHT: usize = 180;
+const WIDTH: usize = 160;
+const HEIGHT: usize = 90;
 
 fn main() {
     // let start = Instant::now();

@@ -1,3 +1,5 @@
+use rand::prelude::*;
+
 type SimulationResult = (
     (usize, Option<Box<dyn Particle>>),
     (usize, Option<Box<dyn Particle>>),
@@ -203,7 +205,7 @@ impl ParticleProperties {
     pub fn sand() -> Self {
         ParticleProperties {
             kind: 0,
-            color: 0xFFDEAD,
+            color: if rand::random() { 0xFFDEAD } else { 0xCCB28A },
             density: 10,
         }
     }
@@ -211,7 +213,7 @@ impl ParticleProperties {
     pub fn water() -> Self {
         ParticleProperties {
             kind: 1,
-            color: 0x0EBFE9,
+            color: if rand::random() { 0x0EBFE9 } else { 0x0B99BA },
             density: 1,
         }
     }
@@ -219,7 +221,7 @@ impl ParticleProperties {
     pub fn rock() -> Self {
         ParticleProperties {
             kind: 2,
-            color: 0x696969,
+            color: if rand::random() { 0x595959 } else { 0x797979 },
             density: 10,
         }
     }
