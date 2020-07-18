@@ -48,11 +48,7 @@ pub struct Sand {
 impl Particle for Sand {
     fn new() -> Sand {
         Sand {
-            properties: ParticleProperties {
-                kind: 0,
-                color: 0xFFDEAD,
-                density: 10,
-            },
+            properties: ParticleProperties::sand(),
         }
     }
 
@@ -104,11 +100,7 @@ pub struct Water {
 impl Particle for Water {
     fn new() -> Water {
         Water {
-            properties: ParticleProperties {
-                kind: 1,
-                color: 0x0EBFE9,
-                density: 1,
-            },
+            properties: ParticleProperties::water(),
         }
     }
 
@@ -123,8 +115,8 @@ impl Particle for Water {
     ) -> Option<SimulationResult> {
         let mut result = None;
         if let Some(below) = get_index_down(index, super::WIDTH, super::HEIGHT) {
-            let mut moved = false;
             if let Some(_) = &particles[below] {
+                let mut moved = false;
                 if let Some(left) = get_index_left(index, super::WIDTH, super::HEIGHT) {
                     if let None = &particles[left] {
                         let temp = self.clone();
@@ -163,17 +155,19 @@ pub struct Rock {
 
 impl Particle for Rock {
     fn new() -> Rock {
-        todo!()
+        Rock {
+            properties: ParticleProperties::rock(),
+        }
     }
     fn get_properties(&self) -> &ParticleProperties {
-        todo!()
+        &self.properties
     }
     fn simulate(
         &self,
         index: usize,
         particles: &Vec<Option<Box<dyn Particle>>>,
     ) -> Option<SimulationResult> {
-        todo!()
+        None
     }
 }
 
@@ -191,6 +185,14 @@ impl ParticleProperties {
             kind: 1,
             color: 0x0EBFE9,
             density: 1,
+        }
+    }
+
+    pub fn rock() -> Self {
+        ParticleProperties {
+            kind: 2,
+            color: 0x696969,
+            density: 10,
         }
     }
 }
