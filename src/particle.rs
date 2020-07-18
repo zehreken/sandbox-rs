@@ -63,9 +63,27 @@ impl Particle for Sand {
     ) -> Option<SimulationResult> {
         let mut result = None;
         if let Some(below) = get_index_down(index, super::WIDTH, super::HEIGHT) {
-            if let Some(_) = &particles[below] {
+            if let Some(below_p) = &particles[below] {
+                if below_p.get_properties().density < self.get_properties().density {
+                    let temp = self.clone();
+                    let sim_res: SimulationResult = (
+                        (index, Some(below_p.clone())),
+                        (below, Some(Box::new(temp))),
+                    );
+                    result = Some(sim_res);
+                }
                 if let Some(left_to_below) = get_index_left(below, super::WIDTH, super::HEIGHT) {
-                    if let None = &particles[left_to_below] {
+                    if let Some(left_to_below_p) = &particles[left_to_below] {
+                        if left_to_below_p.get_properties().density < self.get_properties().density
+                        {
+                            let temp = self.clone();
+                            let sim_res: SimulationResult = (
+                                (index, Some(left_to_below_p.clone())),
+                                (left_to_below, Some(Box::new(temp))),
+                            );
+                            result = Some(sim_res);
+                        }
+                    } else {
                         let temp = self.clone();
                         let sim_res: SimulationResult =
                             ((index, None), (left_to_below, Some(Box::new(temp))));
@@ -73,7 +91,17 @@ impl Particle for Sand {
                     }
                 }
                 if let Some(right_to_below) = get_index_right(below, super::WIDTH, super::HEIGHT) {
-                    if let None = &particles[right_to_below] {
+                    if let Some(right_to_below_p) = &particles[right_to_below] {
+                        if right_to_below_p.get_properties().density < self.get_properties().density
+                        {
+                            let temp = self.clone();
+                            let sim_res: SimulationResult = (
+                                (index, Some(right_to_below_p.clone())),
+                                (right_to_below, Some(Box::new(temp))),
+                            );
+                            result = Some(sim_res);
+                        }
+                    } else {
                         let temp = self.clone();
                         let sim_res: SimulationResult =
                             ((index, None), (right_to_below, Some(Box::new(temp))));
