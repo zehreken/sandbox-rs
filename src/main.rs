@@ -46,8 +46,9 @@ fn main() {
         });
 
         for (index, i) in buffer.iter_mut().enumerate() {
-            if let Some(p) = &model.particles[index] {
-                *i = p.color;
+            if let Some(p) = &model._particles[index] {
+                // *i = p.color;
+                *i = p.get_properties().color;
             } else {
                 *i = 0;
             }
