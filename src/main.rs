@@ -38,6 +38,7 @@ fn main() {
                     Key::Key1 => selected = 1,
                     Key::Key2 => selected = 2,
                     Key::Key3 => selected = 3,
+                    Key::C => model.clear(),
                     _ => (),
                 }
             }

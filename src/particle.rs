@@ -71,41 +71,47 @@ impl Particle for Sand {
                         (below, Some(Box::new(temp))),
                     );
                     result = Some(sim_res);
-                }
-                if let Some(left_to_below) = get_index_left(below, super::WIDTH, super::HEIGHT) {
-                    if let Some(left_to_below_p) = &particles[left_to_below] {
-                        if left_to_below_p.get_properties().density < self.get_properties().density
-                        {
+                } else {
+                    if let Some(left_to_below) = get_index_left(below, super::WIDTH, super::HEIGHT)
+                    {
+                        if let Some(left_to_below_p) = &particles[left_to_below] {
+                            if left_to_below_p.get_properties().density
+                                < self.get_properties().density
+                            {
+                                let temp = self.clone();
+                                let sim_res: SimulationResult = (
+                                    (index, Some(left_to_below_p.clone())),
+                                    (left_to_below, Some(Box::new(temp))),
+                                );
+                                result = Some(sim_res);
+                            }
+                        } else {
                             let temp = self.clone();
-                            let sim_res: SimulationResult = (
-                                (index, Some(left_to_below_p.clone())),
-                                (left_to_below, Some(Box::new(temp))),
-                            );
+                            let sim_res: SimulationResult =
+                                ((index, None), (left_to_below, Some(Box::new(temp))));
                             result = Some(sim_res);
                         }
-                    } else {
-                        let temp = self.clone();
-                        let sim_res: SimulationResult =
-                            ((index, None), (left_to_below, Some(Box::new(temp))));
-                        result = Some(sim_res);
                     }
-                }
-                if let Some(right_to_below) = get_index_right(below, super::WIDTH, super::HEIGHT) {
-                    if let Some(right_to_below_p) = &particles[right_to_below] {
-                        if right_to_below_p.get_properties().density < self.get_properties().density
-                        {
+                    if let Some(right_to_below) =
+                        get_index_right(below, super::WIDTH, super::HEIGHT)
+                    {
+                        if let Some(right_to_below_p) = &particles[right_to_below] {
+                            if right_to_below_p.get_properties().density
+                                < self.get_properties().density
+                            {
+                                let temp = self.clone();
+                                let sim_res: SimulationResult = (
+                                    (index, Some(right_to_below_p.clone())),
+                                    (right_to_below, Some(Box::new(temp))),
+                                );
+                                result = Some(sim_res);
+                            }
+                        } else {
                             let temp = self.clone();
-                            let sim_res: SimulationResult = (
-                                (index, Some(right_to_below_p.clone())),
-                                (right_to_below, Some(Box::new(temp))),
-                            );
+                            let sim_res: SimulationResult =
+                                ((index, None), (right_to_below, Some(Box::new(temp))));
                             result = Some(sim_res);
                         }
-                    } else {
-                        let temp = self.clone();
-                        let sim_res: SimulationResult =
-                            ((index, None), (right_to_below, Some(Box::new(temp))));
-                        result = Some(sim_res);
                     }
                 }
             } else {
@@ -253,6 +259,10 @@ impl ParticleModel {
                 }
             }
         }
+    }
+
+    pub fn clear(&mut self) {
+        self._particles = vec![None; super::WIDTH * super::HEIGHT]
     }
 }
 
